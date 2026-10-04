@@ -12,7 +12,7 @@ import { DefaultAuthGuard } from "../../auth/defaultAuth.guard";
 import { ACLModule } from "../../auth/acl.module";
 import { AclFilterResponseInterceptor } from "../../interceptors/aclFilterResponse.interceptor";
 import { AclValidateRequestInterceptor } from "../../interceptors/aclValidateRequest.interceptor";
-import { map } from "rxjs";
+import { map } from "rxjs/operators";
 import { WishlistController } from "../wishlist.controller";
 import { WishlistService } from "../wishlist.service";
 
