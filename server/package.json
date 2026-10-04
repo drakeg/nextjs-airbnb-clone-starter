@@ -74,6 +74,9 @@
     "testEnvironment": "node",
     "modulePathIgnorePatterns": [
       "<rootDir>/dist/"
-    ]
+    ],
+    "moduleNameMapper": {
+      "^@app/custom-validators$": "<rootDir>/src/validators"
+    }
   }
 }
