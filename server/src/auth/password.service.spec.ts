@@ -1,3 +1,4 @@
+import { jest } from "@jest/globals";
 import { ConfigService } from "@nestjs/config";
 import { Test, TestingModule } from "@nestjs/testing";
 import { PasswordService } from "./password.service";
