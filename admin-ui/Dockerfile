@@ -1,5 +1,5 @@
 # multi-stage: base (build)
-FROM node:18.13.0-slim AS base
+FROM node:24-bookworm-slim AS base
 
 # instantiate environment variable
 ARG REACT_APP_SERVER_URL=http://localhost:3000
@@ -15,7 +15,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # installs packages and their dependencies
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 # copy over the code base
 COPY . .
