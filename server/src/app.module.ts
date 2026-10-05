@@ -1,6 +1,4 @@
-import { Module, Scope } from "@nestjs/common";
-import { APP_INTERCEPTOR } from "@nestjs/core";
-import { MorganInterceptor, MorganModule } from "nest-morgan";
+import { Module } from "@nestjs/common";
 import { UserModule } from "./user/user.module";
 import { ListingModule } from "./listing/listing.module";
 import { WishlistModule } from "./wishlist/wishlist.module";
@@ -28,7 +26,6 @@ import { AuthModule } from "./auth/auth.module";
     HealthModule,
     PrismaModule,
     SecretsManagerModule,
-    MorganModule,
     ConfigModule.forRoot({ isGlobal: true }),
     ServeStaticModule.forRootAsync({
       useClass: ServeStaticOptionsService,
