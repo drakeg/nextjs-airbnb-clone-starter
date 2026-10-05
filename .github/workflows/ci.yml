@@ -1,0 +1,70 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  public:
+    name: Public app
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.x"
+      - name: Install Yarn
+        run: npm install --global yarn@1.22.22
+      - name: Install dependencies
+        working-directory: public
+        run: yarn install --frozen-lockfile
+      - name: Build
+        working-directory: public
+        run: yarn build
+
+  admin-ui:
+    name: Admin UI
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.x"
+      - name: Install dependencies
+        working-directory: admin-ui
+        run: npm install --legacy-peer-deps
+      - name: Build
+        working-directory: admin-ui
+        env:
+          CI: "false"
+        run: npm run build
+
+  server:
+    name: Server
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.x"
+      - name: Install dependencies
+        working-directory: server
+        run: npm install --legacy-peer-deps
+      - name: Generate Prisma client
+        working-directory: server
+        run: npm run prisma:generate
+      - name: Build
+        working-directory: server
+        run: npm run build
+      - name: Unit tests
+        working-directory: server
+        run: npm test -- --runInBand
