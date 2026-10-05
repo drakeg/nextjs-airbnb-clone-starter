@@ -17,7 +17,10 @@ jest.mock("bcrypt", () => ({
   compare: jest.fn(),
 }));
 
-const { hash, compare } = jest.requireMock("bcrypt");
+const { hash, compare } = jest.requireMock("bcrypt") as {
+  hash: jest.Mock;
+  compare: jest.Mock;
+};
 
 hash.mockImplementation(async () => EXAMPLE_HASHED_PASSWORD);
 
