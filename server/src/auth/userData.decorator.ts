@@ -25,6 +25,6 @@ function userFactory(ctx: ExecutionContext): User {
   throw new Error("Invalid context");
 }
 
-export const UserData = createParamDecorator<undefined, ExecutionContext, User>(
-  (data, ctx: ExecutionContext) => userFactory(ctx)
+export const UserData = createParamDecorator(
+  (_data: undefined, ctx: ExecutionContext): User => userFactory(ctx)
 );
