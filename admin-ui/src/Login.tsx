@@ -1,7 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
-import { useLogin, useNotify, Notification, defaultTheme } from "react-admin";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { useLogin, useNotify, Notification } from "react-admin";
 import { Button } from "@mui/material";
 import "./login.scss";
 
@@ -21,7 +20,7 @@ const Login = ({ theme }: any) => {
   };
 
   return (
-    <ThemeProvider theme={createTheme(defaultTheme)}>
+    <>
       <div className={`${CLASS_NAME}`}>
         <div className={`${CLASS_NAME}__wrapper`}>
           <div className={`${CLASS_NAME}__box`}>
@@ -109,7 +108,7 @@ const Login = ({ theme }: any) => {
           <span> to learn more</span>
         </div>
       </div>
-    </ThemeProvider>
+    </>
   );
 };
 
