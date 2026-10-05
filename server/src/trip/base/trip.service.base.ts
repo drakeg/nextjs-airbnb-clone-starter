@@ -26,8 +26,8 @@ export class TripServiceBase {
   ): Promise<Trip[]> {
     return this.prisma.trip.findMany(args);
   }
-  async findOne<T extends Prisma.TripFindUniqueArgs>(
-    args: Prisma.SelectSubset<T, Prisma.TripFindUniqueArgs>
+  async findOne(
+    args: Prisma.TripFindUniqueArgs
   ): Promise<Trip | null> {
     return this.prisma.trip.findUnique(args);
   }
