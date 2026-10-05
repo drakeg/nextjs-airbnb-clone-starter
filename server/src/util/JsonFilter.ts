@@ -11,7 +11,8 @@ import { InputJsonValue } from "../types";
 export class JsonFilter {
   @ApiProperty({
     required: false,
-    type: GraphQLJSONObject,
+    type: "object",
+    additionalProperties: true,
   })
   @IsOptional()
   @Field(() => GraphQLJSONObject, {
@@ -21,7 +22,8 @@ export class JsonFilter {
 
   @ApiProperty({
     required: false,
-    type: GraphQLJSONObject,
+    type: "object",
+    additionalProperties: true,
   })
   @IsOptional()
   @Field(() => GraphQLJSONObject, {
