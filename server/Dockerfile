@@ -1,5 +1,5 @@
 # multi-stage: base (build)
-FROM node:18.13.0 AS base
+FROM node:24-bookworm AS base
 
 # create directory where the application will be built
 WORKDIR /app
@@ -9,7 +9,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # installs packages and their dependencies
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 # copy over the prisma schema
 COPY prisma/schema.prisma ./prisma/
@@ -24,7 +24,7 @@ COPY . .
 RUN npm run build
 
 # multi-stage: production (runtime)
-FROM node:18.13.0-slim AS production
+FROM node:24-bookworm-slim AS production
 
 # create arguments of builds time variables
 ARG user=amplication
@@ -55,7 +55,7 @@ COPY --from=base /app/tsconfig* ./
 RUN chown -R ${uid}:${gid} /app/
 
 # get rid of the development dependencies
-RUN npm install --production
+RUN npm install --omit=dev --legacy-peer-deps
 
 # set user to the created non-privileged user
 USER ${user}
