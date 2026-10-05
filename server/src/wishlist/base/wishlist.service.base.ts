@@ -26,8 +26,8 @@ export class WishlistServiceBase {
   ): Promise<Wishlist[]> {
     return this.prisma.wishlist.findMany(args);
   }
-  async findOne<T extends Prisma.WishlistFindUniqueArgs>(
-    args: Prisma.SelectSubset<T, Prisma.WishlistFindUniqueArgs>
+  async findOne(
+    args: Prisma.WishlistFindUniqueArgs
   ): Promise<Wishlist | null> {
     return this.prisma.wishlist.findUnique(args);
   }
