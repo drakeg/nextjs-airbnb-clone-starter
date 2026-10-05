@@ -26,7 +26,8 @@
     "types": [
       "node",
       "jest"
-    ]
+    ],
+    "useUnknownInCatchVariables": false
   },
   "include": [
     "src"
