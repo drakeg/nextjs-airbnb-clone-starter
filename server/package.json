@@ -84,7 +84,16 @@
         "ts-jest",
         {
           "useESM": true,
-          "tsconfig": "tsconfig.json"
+          "tsconfig": {
+            "module": "ES2022",
+            "target": "ES2022",
+            "moduleResolution": "node",
+            "esModuleInterop": true,
+            "allowSyntheticDefaultImports": true,
+            "experimentalDecorators": true,
+            "emitDecoratorMetadata": true,
+            "resolveJsonModule": true
+          }
         }
       ]
     },
