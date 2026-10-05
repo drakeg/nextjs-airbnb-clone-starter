@@ -1,7 +1,7 @@
 {
   "name": "airbnb-clone",
   "version": "1.0.0",
-  "description": "",
+  "description": "Maintained full-stack Airbnb clone with Next.js, React Admin, NestJS, Prisma, and Docker.",
   "main": "index.js",
   "scripts": {
     "start": "npm-run-all -p start:frontend start:backend",
@@ -16,15 +16,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/koolkishan/nextjs-airbnb-clone.git"
+    "url": "git+https://github.com/drakeg/nextjs-airbnb-clone-starter.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/koolkishan/nextjs-airbnb-clone/issues"
+    "url": "https://github.com/drakeg/nextjs-airbnb-clone-starter/issues"
   },
-  "homepage": "https://github.com/koolkishan/nextjs-airbnb-clone#readme",
+  "homepage": "https://github.com/drakeg/nextjs-airbnb-clone-starter#readme",
   "dependencies": {
     "qs": "^6.11.2"
+  },
+  "engines": {
+    "node": ">=24 <25",
+    "npm": ">=11"
   }
 }
