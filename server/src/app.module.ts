@@ -45,12 +45,5 @@ import { AuthModule } from "./auth/auth.module";
       imports: [ConfigModule],
     }),
   ],
-  providers: [
-    {
-      provide: APP_INTERCEPTOR,
-      scope: Scope.REQUEST,
-      useClass: MorganInterceptor("combined"),
-    },
-  ],
 })
 export class AppModule {}
