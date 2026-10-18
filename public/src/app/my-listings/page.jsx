@@ -2,7 +2,7 @@ import ListingCard from "@/components/listingCard";
 import { getListingsForOwner } from "@/lib/listings";
 
 export default async function MyListingsPage() {
-  const listings = await getListingsForOwner("Mad Mallard Stays");
+  const listings = await getListingsForOwner("demo-host");
 
   return (
     <section className="mx-auto max-w-7xl px-6 py-10">
