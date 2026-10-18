@@ -17,6 +17,8 @@ jobs:
   app:
     name: Unified Next.js app
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: postgresql://roost:roost@localhost:5432/roost
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7

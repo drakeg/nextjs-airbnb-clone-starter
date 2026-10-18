@@ -1,4 +1,24 @@
-import { listings } from "@/data/listings";
+import { prisma } from "@/lib/prisma";
+
+function toListingCard(listing) {
+  return {
+    id: listing.id,
+    title: listing.title,
+    description: listing.description ?? "",
+    location: listing.location,
+    locationType: listing.locationType,
+    placeType: listing.placeType,
+    price: listing.price,
+    guests: listing.guests,
+    bedrooms: listing.bedrooms,
+    rating: listing.rating,
+    owner:
+      listing.owner?.username ??
+      [listing.owner?.firstName, listing.owner?.lastName].filter(Boolean).join(" ") ??
+      "Roost host",
+    featured: listing.featured,
+  };
+}
 
 export async function getListings({
   query = "",
@@ -7,31 +27,30 @@ export async function getListings({
   maxPrice = "",
   sort = "recommended",
 } = {}) {
-  const normalized = query.trim().toLowerCase();
   const minimumGuests = Number.parseInt(guests, 10);
   const maximumPrice = Number.parseInt(maxPrice, 10);
 
-  let results = listings.filter((listing) => {
-    const matchesQuery =
-      !normalized ||
-      [
-        listing.title,
-        listing.location,
-        listing.locationType,
-        listing.placeType,
-        listing.description,
-      ].some((value) => value.toLowerCase().includes(normalized));
-
-    const matchesType = !placeType || listing.placeType === placeType;
-    const matchesGuests =
-      !Number.isFinite(minimumGuests) || listing.guests >= minimumGuests;
-    const matchesPrice =
-      !Number.isFinite(maximumPrice) || listing.price <= maximumPrice;
-
-    return matchesQuery && matchesType && matchesGuests && matchesPrice;
+  const listings = await prisma.listing.findMany({
+    where: {
+      ...(query
+        ? {
+            OR: [
+              { title: { contains: query, mode: "insensitive" } },
+              { description: { contains: query, mode: "insensitive" } },
+              { location: { contains: query, mode: "insensitive" } },
+              { locationType: { contains: query, mode: "insensitive" } },
+              { placeType: { contains: query, mode: "insensitive" } },
+            ],
+          }
+        : {}),
+      ...(placeType ? { placeType } : {}),
+      ...(Number.isFinite(minimumGuests) ? { guests: { gte: minimumGuests } } : {}),
+      ...(Number.isFinite(maximumPrice) ? { price: { lte: maximumPrice } } : {}),
+    },
+    include: { owner: true },
   });
 
-  results = [...results];
+  const results = listings.map(toListingCard);
 
   switch (sort) {
     case "price-asc":
@@ -55,19 +74,43 @@ export async function getListings({
 }
 
 export async function getFeaturedListings() {
-  return listings.filter((listing) => listing.featured);
+  const listings = await prisma.listing.findMany({
+    where: { featured: true },
+    include: { owner: true },
+    take: 6,
+    orderBy: [{ rating: "desc" }, { createdAt: "desc" }],
+  });
+
+  return listings.map(toListingCard);
 }
 
 export async function getListingById(id) {
-  return listings.find((listing) => listing.id === id) ?? null;
+  const listing = await prisma.listing.findUnique({
+    where: { id },
+    include: { owner: true },
+  });
+
+  return listing ? toListingCard(listing) : null;
 }
 
-export async function getListingsForOwner(owner) {
-  return listings.filter((listing) => listing.owner === owner);
+export async function getListingsForOwner(ownerUsername) {
+  const listings = await prisma.listing.findMany({
+    where: { owner: { username: ownerUsername } },
+    include: { owner: true },
+    orderBy: { createdAt: "desc" },
+  });
+
+  return listings.map(toListingCard);
 }
 
 export async function getListingFilterOptions() {
+  const rows = await prisma.listing.findMany({
+    distinct: ["placeType"],
+    select: { placeType: true },
+    orderBy: { placeType: "asc" },
+  });
+
   return {
-    placeTypes: [...new Set(listings.map((listing) => listing.placeType))].sort(),
+    placeTypes: rows.map((row) => row.placeType),
   };
 }

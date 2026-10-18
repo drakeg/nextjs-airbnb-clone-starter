@@ -1,10 +1,11 @@
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+  moduleFormat = "cjs"
 }
 
 enum UserRole {
@@ -30,13 +31,16 @@ model Listing {
   id          String     @id @default(cuid())
   title       String
   description String?
+  location     String
   locationType String
-  placeType   String
-  price       Int
-  locationData Json?
+  placeType    String
+  price        Int
+  guests       Int        @default(1)
+  bedrooms     Int        @default(1)
+  rating       Float      @default(5)
+  featured     Boolean    @default(false)
   mapData      Json?
   photos       Json?
-  placeSpace   Json?
   ownerId      String?
   owner        User?      @relation(fields: [ownerId], references: [id], onDelete: SetNull)
   trips        Trip[]

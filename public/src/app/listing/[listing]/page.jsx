@@ -2,6 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getListingById } from "@/lib/listings";
 
+export const dynamic = "force-dynamic";
+
 export default async function ListingPage({ params }) {
   const { listing: id } = await params;
   const listing = await getListingById(id);

@@ -2,6 +2,8 @@ import Link from "next/link";
 import ListingCard from "@/components/listingCard";
 import { getFeaturedListings } from "@/lib/listings";
 
+export const dynamic = "force-dynamic";
+
 export default async function HomePage() {
   const listings = await getFeaturedListings();
 
