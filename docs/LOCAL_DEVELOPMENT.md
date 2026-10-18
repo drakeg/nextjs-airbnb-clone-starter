@@ -15,6 +15,10 @@ docker compose up --build
 The application is available on `APP_PORT` (default `3000`). PostgreSQL is
 published on `DB_PORT` (default `5432`).
 
+The app container runs `prisma migrate deploy` before starting Next.js, so a new
+local database is initialized automatically. The first migration also loads a
+small demo catalog for development.
+
 ## Environment variables
 
 - `APP_PORT`: host port mapped to the Next.js application.
@@ -30,3 +34,19 @@ The container-to-container database hostname is `db`.
 
 New product functionality belongs in `public/`. The legacy `server/` and
 `admin-ui/` trees remain temporarily for migration reference only.
+
+
+## Prisma
+
+The unified app uses Prisma ORM 7 with PostgreSQL.
+
+Useful commands from `public/`:
+
+```bash
+yarn prisma:generate
+yarn db:migrate
+yarn db:deploy
+```
+
+For local commands outside Docker, set `DATABASE_URL` to a PostgreSQL URL that
+is reachable from your host (usually using `localhost` and `DB_PORT`).
