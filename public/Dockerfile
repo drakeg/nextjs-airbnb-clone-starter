@@ -15,6 +15,7 @@ ARG DATABASE_URL=postgresql://roost:roost@localhost:5432/roost
 ENV DATABASE_URL=${DATABASE_URL}
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+RUN yarn prisma:generate
 RUN yarn build
 
 FROM node:24-bookworm-slim AS runner
