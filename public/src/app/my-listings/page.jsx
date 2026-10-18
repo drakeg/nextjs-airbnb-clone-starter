@@ -1,6 +1,8 @@
 import ListingCard from "@/components/listingCard";
 import { getListingsForOwner } from "@/lib/listings";
 
+export const dynamic = "force-dynamic";
+
 export default async function MyListingsPage() {
   const listings = await getListingsForOwner("demo-host");
 
