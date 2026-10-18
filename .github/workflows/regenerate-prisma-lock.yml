@@ -8,6 +8,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: prisma-lockfile-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   lockfile:
     if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
@@ -35,4 +39,6 @@ jobs:
             exit 0
           fi
           git commit -m "chore: regenerate Prisma lockfile [skip ci]"
+          git fetch origin feat/prisma-persistence
+          git rebase origin/feat/prisma-persistence
           git push
