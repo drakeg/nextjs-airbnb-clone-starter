@@ -36,16 +36,14 @@ export async function createListing(formData) {
     data: {
       title,
       description: description || null,
+      location,
       locationType,
       placeType,
       price,
-      locationData: { label: location },
-      placeSpace: {
-        guests: Number.isFinite(guests) ? Math.max(1, guests) : 1,
-        bedrooms: Number.isFinite(bedrooms) ? Math.max(1, bedrooms) : 1,
-        rating: 5,
-        featured: false,
-      },
+      guests: Number.isFinite(guests) ? Math.max(1, guests) : 1,
+      bedrooms: Number.isFinite(bedrooms) ? Math.max(1, bedrooms) : 1,
+      rating: 5,
+      featured: false,
       ownerId: owner.id,
     },
   });
