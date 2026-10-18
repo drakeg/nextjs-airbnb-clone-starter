@@ -1,4 +1,34 @@
-import { listings } from "@/data/listings";
+import { prisma } from "@/lib/prisma";
+
+function toListingCard(listing) {
+  const locationData =
+    listing.locationData && typeof listing.locationData === "object"
+      ? listing.locationData
+      : {};
+
+  const placeSpace =
+    listing.placeSpace && typeof listing.placeSpace === "object"
+      ? listing.placeSpace
+      : {};
+
+  return {
+    id: listing.id,
+    title: listing.title,
+    description: listing.description ?? "",
+    location: locationData.label ?? locationData.location ?? "Location coming soon",
+    locationType: listing.locationType,
+    placeType: listing.placeType,
+    price: listing.price,
+    guests: Number(placeSpace.guests ?? 1),
+    bedrooms: Number(placeSpace.bedrooms ?? 1),
+    rating: Number(placeSpace.rating ?? 5),
+    owner:
+      listing.owner?.username ??
+      [listing.owner?.firstName, listing.owner?.lastName].filter(Boolean).join(" ") ??
+      "Roost host",
+    featured: Boolean(placeSpace.featured),
+  };
+}
 
 export async function getListings({
   query = "",
@@ -7,31 +37,33 @@ export async function getListings({
   maxPrice = "",
   sort = "recommended",
 } = {}) {
-  const normalized = query.trim().toLowerCase();
   const minimumGuests = Number.parseInt(guests, 10);
   const maximumPrice = Number.parseInt(maxPrice, 10);
 
-  let results = listings.filter((listing) => {
-    const matchesQuery =
-      !normalized ||
-      [
-        listing.title,
-        listing.location,
-        listing.locationType,
-        listing.placeType,
-        listing.description,
-      ].some((value) => value.toLowerCase().includes(normalized));
-
-    const matchesType = !placeType || listing.placeType === placeType;
-    const matchesGuests =
-      !Number.isFinite(minimumGuests) || listing.guests >= minimumGuests;
-    const matchesPrice =
-      !Number.isFinite(maximumPrice) || listing.price <= maximumPrice;
-
-    return matchesQuery && matchesType && matchesGuests && matchesPrice;
+  const listings = await prisma.listing.findMany({
+    where: {
+      ...(query
+        ? {
+            OR: [
+              { title: { contains: query, mode: "insensitive" } },
+              { description: { contains: query, mode: "insensitive" } },
+              { locationType: { contains: query, mode: "insensitive" } },
+              { placeType: { contains: query, mode: "insensitive" } },
+            ],
+          }
+        : {}),
+      ...(placeType ? { placeType } : {}),
+      ...(Number.isFinite(maximumPrice) ? { price: { lte: maximumPrice } } : {}),
+    },
+    include: { owner: true },
   });
 
-  results = [...results];
+  let results = listings
+    .map(toListingCard)
+    .filter(
+      (listing) =>
+        !Number.isFinite(minimumGuests) || listing.guests >= minimumGuests
+    );
 
   switch (sort) {
     case "price-asc":
@@ -55,19 +87,42 @@ export async function getListings({
 }
 
 export async function getFeaturedListings() {
-  return listings.filter((listing) => listing.featured);
+  const listings = await prisma.listing.findMany({
+    include: { owner: true },
+    take: 6,
+    orderBy: { createdAt: "desc" },
+  });
+
+  return listings.map(toListingCard);
 }
 
 export async function getListingById(id) {
-  return listings.find((listing) => listing.id === id) ?? null;
+  const listing = await prisma.listing.findUnique({
+    where: { id },
+    include: { owner: true },
+  });
+
+  return listing ? toListingCard(listing) : null;
 }
 
-export async function getListingsForOwner(owner) {
-  return listings.filter((listing) => listing.owner === owner);
+export async function getListingsForOwner(ownerUsername) {
+  const listings = await prisma.listing.findMany({
+    where: { owner: { username: ownerUsername } },
+    include: { owner: true },
+    orderBy: { createdAt: "desc" },
+  });
+
+  return listings.map(toListingCard);
 }
 
 export async function getListingFilterOptions() {
+  const rows = await prisma.listing.findMany({
+    distinct: ["placeType"],
+    select: { placeType: true },
+    orderBy: { placeType: "asc" },
+  });
+
   return {
-    placeTypes: [...new Set(listings.map((listing) => listing.placeType))].sort(),
+    placeTypes: rows.map((row) => row.placeType),
   };
 }
