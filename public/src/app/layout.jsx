@@ -25,6 +25,12 @@ export default async function RootLayout({ children }) {
               </Link>
               {user ? (
                 <>
+                  <Link href="/wishlist" className="hover:text-slate-950">
+                    Wishlist
+                  </Link>
+                  <Link href="/trips" className="hover:text-slate-950">
+                    Trips
+                  </Link>
                   <Link href="/my-listings" className="hover:text-slate-950">
                     My listings
                   </Link>
