@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { getCurrentUser } from "@/lib/auth";
+import { logout } from "@/app/auth/actions";
 import "./globals.css";
 
 export const metadata = {
@@ -6,7 +8,9 @@ export const metadata = {
   description: "Find memorable places to stay.",
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const user = await getCurrentUser();
+
   return (
     <html lang="en">
       <body className="min-h-screen bg-slate-50 text-slate-900 antialiased">
@@ -19,15 +23,35 @@ export default function RootLayout({ children }) {
               <Link href="/search" className="hover:text-slate-950">
                 Explore
               </Link>
-              <Link href="/my-listings" className="hover:text-slate-950">
-                My listings
-              </Link>
-              <Link
-                href="/new-listing"
-                className="rounded-full bg-slate-950 px-4 py-2 text-white hover:bg-slate-800"
-              >
-                Host a stay
-              </Link>
+              {user ? (
+                <>
+                  <Link href="/my-listings" className="hover:text-slate-950">
+                    My listings
+                  </Link>
+                  <Link
+                    href="/new-listing"
+                    className="rounded-full bg-slate-950 px-4 py-2 text-white hover:bg-slate-800"
+                  >
+                    Host a stay
+                  </Link>
+                  <span className="text-slate-400">@{user.username}</span>
+                  <form action={logout}>
+                    <button className="hover:text-slate-950">Sign out</button>
+                  </form>
+                </>
+              ) : (
+                <>
+                  <Link href="/login" className="hover:text-slate-950">
+                    Sign in
+                  </Link>
+                  <Link
+                    href="/register"
+                    className="rounded-full bg-slate-950 px-4 py-2 text-white hover:bg-slate-800"
+                  >
+                    Create account
+                  </Link>
+                </>
+              )}
             </nav>
           </div>
         </header>

@@ -3,8 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-
-const DEFAULT_OWNER_USERNAME = "demo-host";
+import { requireUser } from "@/lib/auth";
 
 export async function createListing(formData) {
   const title = String(formData.get("title") ?? "").trim();
@@ -20,17 +19,7 @@ export async function createListing(formData) {
     throw new Error("Title, location, stay type, and a valid nightly price are required.");
   }
 
-  const owner = await prisma.user.upsert({
-    where: { username: DEFAULT_OWNER_USERNAME },
-    update: {},
-    create: {
-      username: DEFAULT_OWNER_USERNAME,
-      firstName: "Demo",
-      lastName: "Host",
-      password: "auth-migration-pending",
-      role: "ADMIN",
-    },
-  });
+  const owner = await requireUser();
 
   const listing = await prisma.listing.create({
     data: {
