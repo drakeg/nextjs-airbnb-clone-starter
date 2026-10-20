@@ -70,28 +70,41 @@ export async function createTrip(formData) {
     throw new Error("You cannot reserve your own listing.");
   }
 
-  const conflict = await prisma.trip.findFirst({
-    where: {
-      listingId,
-      AND: [
-        { startsAt: { lt: endsAt } },
-        { endsAt: { gt: startsAt } },
-      ],
-    },
-  });
+  const booked = await prisma.$transaction(
+    async (tx) => {
+      const conflict = await tx.trip.findFirst({
+        where: {
+          listingId,
+          AND: [
+            { startsAt: { lt: endsAt } },
+            { endsAt: { gt: startsAt } },
+          ],
+        },
+      });
 
-  if (conflict) {
+      if (conflict) {
+        return false;
+      }
+
+      await tx.trip.create({
+        data: {
+          userId: user.id,
+          listingId,
+          startsAt,
+          endsAt,
+        },
+      });
+
+      return true;
+    },
+    {
+      isolationLevel: "Serializable",
+    }
+  );
+
+  if (!booked) {
     redirect(`/listing/${listingId}?error=Those%20dates%20are%20not%20available`);
   }
-
-  await prisma.trip.create({
-    data: {
-      userId: user.id,
-      listingId,
-      startsAt,
-      endsAt,
-    },
-  });
 
   revalidatePath("/trips");
   redirect("/trips");
