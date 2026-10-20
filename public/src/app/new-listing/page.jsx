@@ -1,8 +1,10 @@
+import { requireUser } from "@/lib/auth";
 import { createListing } from "./actions";
 
 export const dynamic = "force-dynamic";
 
-export default function NewListingPage() {
+export default async function NewListingPage() {
+  await requireUser();
   return (
     <section className="mx-auto max-w-3xl px-6 py-10">
       <p className="text-sm font-semibold text-sky-700">Hosting</p>
