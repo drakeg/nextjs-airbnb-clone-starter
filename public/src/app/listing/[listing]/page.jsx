@@ -1,14 +1,49 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getListingById } from "@/lib/listings";
+import { getCurrentUser } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { createTrip, toggleWishlist } from "@/app/stay-actions";
 
 export const dynamic = "force-dynamic";
 
-export default async function ListingPage({ params }) {
+function toDateInputValue(date) {
+  return date.toISOString().slice(0, 10);
+}
+
+export default async function ListingPage({ params, searchParams }) {
   const { listing: id } = await params;
+  const query = await searchParams;
   const listing = await getListingById(id);
 
   if (!listing) notFound();
+
+  const user = await getCurrentUser();
+  const databaseListing = user
+    ? await prisma.listing.findUnique({
+        where: { id },
+        select: { ownerId: true },
+      })
+    : null;
+
+  const saved = user
+    ? Boolean(
+        await prisma.wishlist.findUnique({
+          where: {
+            userId_listingId: {
+              userId: user.id,
+              listingId: id,
+            },
+          },
+        })
+      )
+    : false;
+
+  const ownsListing = Boolean(user && databaseListing?.ownerId === user.id);
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const dayAfter = new Date();
+  dayAfter.setDate(dayAfter.getDate() + 2);
 
   return (
     <section className="mx-auto max-w-6xl px-6 py-10">
@@ -39,13 +74,78 @@ export default async function ListingPage({ params }) {
         </div>
 
         <aside className="h-fit rounded-3xl border border-slate-200 bg-white p-6 shadow-lg">
-          <p className="text-2xl font-bold">${listing.price} <span className="text-base font-normal text-slate-500">/ night</span></p>
-          <div className="mt-5 rounded-2xl bg-slate-50 p-4 text-sm text-slate-600">
-            Reservation checkout is coming in the next migration phase.
-          </div>
-          <button className="mt-5 w-full rounded-2xl bg-sky-400 px-5 py-4 font-bold text-slate-950">
-            Check availability
-          </button>
+          <p className="text-2xl font-bold">
+            ${listing.price}{" "}
+            <span className="text-base font-normal text-slate-500">/ night</span>
+          </p>
+
+          {query?.error ? (
+            <p className="mt-4 rounded-xl bg-red-50 p-3 text-sm text-red-700">
+              {query.error}
+            </p>
+          ) : null}
+
+          {user ? (
+            <form action={toggleWishlist} className="mt-5">
+              <input type="hidden" name="listingId" value={listing.id} />
+              <button className="w-full rounded-2xl border border-slate-300 px-5 py-3 font-semibold hover:border-sky-400">
+                {saved ? "Remove from wishlist" : "Save to wishlist"}
+              </button>
+            </form>
+          ) : (
+            <Link
+              href="/login"
+              className="mt-5 block rounded-2xl border border-slate-300 px-5 py-3 text-center font-semibold"
+            >
+              Sign in to save
+            </Link>
+          )}
+
+          {ownsListing ? (
+            <div className="mt-5 rounded-2xl bg-slate-50 p-4 text-sm text-slate-600">
+              This is your listing, so reservations are disabled.
+            </div>
+          ) : user ? (
+            <form action={createTrip} className="mt-5 space-y-4">
+              <input type="hidden" name="listingId" value={listing.id} />
+              <label className="block">
+                <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  Check in
+                </span>
+                <input
+                  type="date"
+                  name="startsAt"
+                  min={toDateInputValue(tomorrow)}
+                  defaultValue={toDateInputValue(tomorrow)}
+                  required
+                  className="w-full rounded-xl border border-slate-300 px-3 py-2"
+                />
+              </label>
+              <label className="block">
+                <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  Check out
+                </span>
+                <input
+                  type="date"
+                  name="endsAt"
+                  min={toDateInputValue(dayAfter)}
+                  defaultValue={toDateInputValue(dayAfter)}
+                  required
+                  className="w-full rounded-xl border border-slate-300 px-3 py-2"
+                />
+              </label>
+              <button className="w-full rounded-2xl bg-sky-400 px-5 py-4 font-bold text-slate-950 hover:bg-sky-300">
+                Reserve stay
+              </button>
+            </form>
+          ) : (
+            <Link
+              href="/login"
+              className="mt-5 block rounded-2xl bg-sky-400 px-5 py-4 text-center font-bold text-slate-950"
+            >
+              Sign in to reserve
+            </Link>
+          )}
         </aside>
       </div>
     </section>
