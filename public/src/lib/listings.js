@@ -93,9 +93,9 @@ export async function getListingById(id) {
   return listing ? toListingCard(listing) : null;
 }
 
-export async function getListingsForOwner(ownerUsername) {
+export async function getListingsForOwner(ownerId) {
   const listings = await prisma.listing.findMany({
-    where: { owner: { username: ownerUsername } },
+    where: { ownerId },
     include: { owner: true },
     orderBy: { createdAt: "desc" },
   });
