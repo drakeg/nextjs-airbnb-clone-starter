@@ -95,9 +95,17 @@ export default async function AdminPage() {
               <article key={listing.id} className="rounded-2xl border border-slate-200 bg-white p-5">
                 <div className="flex items-center justify-between gap-4">
                   <div>
-                    <Link href={`/listing/${listing.id}`} className="font-semibold hover:text-sky-700">
-                      {listing.title}
-                    </Link>
+                    <div className="flex flex-wrap items-center gap-3">
+                      <Link href={`/listing/${listing.id}`} className="font-semibold hover:text-sky-700">
+                        {listing.title}
+                      </Link>
+                      <Link
+                        href={`/my-listings/${listing.id}/edit`}
+                        className="text-xs font-semibold text-sky-700"
+                      >
+                        Edit
+                      </Link>
+                    </div>
                     <p className="text-sm text-slate-500">
                       {listing.location} · @{listing.owner?.username ?? "unassigned"}
                     </p>
