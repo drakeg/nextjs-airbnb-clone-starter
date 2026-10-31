@@ -9,8 +9,8 @@ The existing `public/` application already contains the core product experience:
 search, listing details, listing creation, my listings, trips, wishlist, maps, image
 upload, and authentication UI. It becomes the primary application.
 
-The legacy `server/` and `admin-ui/` directories remain temporarily as migration
-references. They are no longer product CI gates and should not receive feature work.
+The legacy `server/` and `admin-ui/` applications have been retired. Roost now
+uses the unified Next.js application as the only active product architecture.
 
 ## Target architecture
 
@@ -64,18 +64,20 @@ reservations/trips, moderation, and operational reporting.
 
 ### Phase 6 — Retire legacy code
 
-When feature parity is verified:
+Completed:
 
-- remove `server/`
-- remove `admin-ui/`
-- remove legacy GraphQL/Apollo/Nest/Amplication dependencies and generated code
-- remove legacy Docker images and documentation
-- make the unified application the only deployable service
+- removed `server/`
+- removed `admin-ui/`
+- retired the legacy GraphQL/Apollo/Nest/Amplication application path
+- made the unified Next.js application the only deployable product service
+
+Remaining cleanup should focus only on stale references or unused dependencies that
+are still present outside those removed trees.
 
 ## Engineering rules
 
-- Do not add new functionality to the legacy server or admin UI.
 - New product features belong in `public/`.
+- Do not reintroduce the retired legacy server or admin application architecture.
 - Prefer server components/actions where they simplify data access.
 - Add tests with migrated functionality rather than preserving brittle generated
   tests solely for historical parity.

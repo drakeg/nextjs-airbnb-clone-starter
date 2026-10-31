@@ -30,7 +30,7 @@ Roost is moving toward a single deployable Next.js application:
 - **First-party authentication** using scrypt password hashing and server-side sessions
 - **Docker Compose** for local application and database services
 
-The legacy `server/` and `admin-ui/` directories remain temporarily as migration references and are not part of the active product architecture.
+The legacy Nest/Amplication server and separate React Admin application have been removed. Roost now ships as a single active Next.js application backed by PostgreSQL and Prisma.
 
 ## Local development
 
@@ -51,7 +51,7 @@ http://localhost:3000
 
 ## Modernization status
 
-The active product path no longer depends on the legacy NestJS/Amplication backend or React Admin UI. See [docs/MODERNIZATION.md](docs/MODERNIZATION.md) for the migration plan and remaining cleanup work.
+The legacy NestJS/Amplication backend and React Admin UI have been retired. See [docs/MODERNIZATION.md](docs/MODERNIZATION.md) for the completed migration history and remaining cleanup work.
 
 ## Project name
 

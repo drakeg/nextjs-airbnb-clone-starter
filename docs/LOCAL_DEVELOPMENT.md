@@ -32,8 +32,9 @@ The container-to-container database hostname is `db`.
 
 ## Architecture
 
-New product functionality belongs in `public/`. The legacy `server/` and
-`admin-ui/` trees remain temporarily for migration reference only.
+Roost is a single active Next.js application under `public/`, backed by
+PostgreSQL and Prisma. The legacy server and separate admin application have
+been retired.
 
 
 ## Prisma
