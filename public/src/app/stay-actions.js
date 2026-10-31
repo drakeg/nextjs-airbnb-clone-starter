@@ -75,6 +75,7 @@ export async function createTrip(formData) {
       const conflict = await tx.trip.findFirst({
         where: {
           listingId,
+          status: { in: ["PENDING", "CONFIRMED"] },
           AND: [
             { startsAt: { lt: endsAt } },
             { endsAt: { gt: startsAt } },
@@ -114,12 +115,15 @@ export async function cancelTrip(formData) {
   const user = await requireUser();
   const tripId = String(formData.get("tripId") ?? "");
 
-  await prisma.trip.deleteMany({
+  await prisma.trip.updateMany({
     where: {
       id: tripId,
       userId: user.id,
+      status: { in: ["PENDING", "CONFIRMED"] },
     },
+    data: { status: "CANCELLED" },
   });
 
   revalidatePath("/trips");
+  revalidatePath("/host/reservations");
 }
