@@ -47,14 +47,15 @@ export async function updateListing(listingId, formData) {
     redirect("/my-listings");
   }
 
-  await prisma.listing.update({
+  const updated = await prisma.listing.update({
     where: { id: listingId },
     data: readListingForm(formData),
+    select: { active: true },
   });
 
   revalidatePath("/");
   revalidatePath("/search");
   revalidatePath("/my-listings");
   revalidatePath(`/listing/${listingId}`);
-  redirect(`/listing/${listingId}`);
+  redirect(updated.active ? `/listing/${listingId}` : "/my-listings");
 }
