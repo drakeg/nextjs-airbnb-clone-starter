@@ -48,6 +48,9 @@ export default async function RootLayout({ children }) {
                       Admin
                     </Link>
                   ) : null}
+                  <Link href="/account" className="hover:text-slate-950">
+                    Account
+                  </Link>
                   <span className="text-slate-400">@{user.username}</span>
                   <form action={logout}>
                     <button className="hover:text-slate-950">Sign out</button>
