@@ -40,6 +40,7 @@ model Listing {
   bedrooms     Int        @default(1)
   rating       Float      @default(5)
   featured     Boolean    @default(false)
+  active       Boolean    @default(true)
   mapData      Json?
   photos       Json?
   ownerId      String?
