@@ -17,7 +17,7 @@ references. They are no longer product CI gates and should not receive feature w
 - Next.js App Router for pages, server rendering, route handlers, and server actions.
 - PostgreSQL for persistent data.
 - Prisma for type-safe database access and migrations.
-- Auth.js-compatible authentication integrated directly into the Next.js app.
+- First-party authentication integrated directly into the Next.js app using scrypt password hashing, server-side sessions, and HttpOnly cookies.
 - Role-based authorization implemented in application code without generated
   `nest-access-control` wrappers.
 - Admin/owner screens implemented inside the same Next.js application under an
@@ -42,7 +42,7 @@ constraints that match product behavior.
 
 ### Phase 3 — Authentication and authorization
 
-Replace the generated Nest authentication stack with application-native auth.
+Replace the generated Nest authentication stack with first-party application-native auth.
 Support user and admin/owner roles. Centralize authorization checks for server
 actions and route handlers.
 
