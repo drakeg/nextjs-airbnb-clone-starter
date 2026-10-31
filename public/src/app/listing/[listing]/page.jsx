@@ -51,7 +51,27 @@ export default async function ListingPage({ params, searchParams }) {
         ← Back to stays
       </Link>
       <div className="mt-6 overflow-hidden rounded-[2rem] bg-gradient-to-br from-sky-200 via-indigo-100 to-amber-100">
-        <div className="h-80 sm:h-[28rem]" />
+        {listing.photos?.length ? (
+          <div className="grid gap-1 sm:grid-cols-2">
+            <img
+              src={listing.photos[0]}
+              alt={listing.title}
+              className="h-80 w-full object-cover sm:h-[28rem]"
+            />
+            <div className="grid grid-cols-2 gap-1">
+              {listing.photos.slice(1, 5).map((photo, index) => (
+                <img
+                  key={photo}
+                  src={photo}
+                  alt={`${listing.title} photo ${index + 2}`}
+                  className="h-40 w-full object-cover sm:h-[13.875rem]"
+                />
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="h-80 sm:h-[28rem]" />
+        )}
       </div>
 
       <div className="mt-8 grid gap-10 lg:grid-cols-[1fr_340px]">
