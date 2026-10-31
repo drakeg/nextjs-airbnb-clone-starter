@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { hashPassword, requireUser, verifyPassword } from "@/lib/auth";
+import { destroySession, hashPassword, requireUser, verifyPassword } from "@/lib/auth";
 
 export async function updateProfile(formData) {
   const user = await requireUser();
@@ -48,11 +48,9 @@ export async function changePassword(formData) {
   });
 
   await prisma.session.deleteMany({
-    where: {
-      userId: user.id,
-      id: { not: undefined },
-    },
+    where: { userId: user.id },
   });
+  await destroySession();
 
   redirect("/login");
 }
