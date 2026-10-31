@@ -34,12 +34,20 @@ export default async function RootLayout({ children }) {
                   <Link href="/my-listings" className="hover:text-slate-950">
                     My listings
                   </Link>
+                  <Link href="/host/reservations" className="hover:text-slate-950">
+                    Reservations
+                  </Link>
                   <Link
                     href="/new-listing"
                     className="rounded-full bg-slate-950 px-4 py-2 text-white hover:bg-slate-800"
                   >
                     Host a stay
                   </Link>
+                  {user.role === "ADMIN" ? (
+                    <Link href="/admin" className="hover:text-slate-950">
+                      Admin
+                    </Link>
+                  ) : null}
                   <span className="text-slate-400">@{user.username}</span>
                   <form action={logout}>
                     <button className="hover:text-slate-950">Sign out</button>
