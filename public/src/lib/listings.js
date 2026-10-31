@@ -18,6 +18,7 @@ function toListingCard(listing) {
       "Roost host",
     featured: listing.featured,
     active: listing.active,
+    photos: Array.isArray(listing.photos) ? listing.photos : [],
   };
 }
 
