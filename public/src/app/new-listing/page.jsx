@@ -39,6 +39,18 @@ export default async function NewListingPage() {
           </label>
         ))}
         <label className="block">
+          <span className="mb-2 block text-sm font-semibold">Photo URLs</span>
+          <textarea
+            name="photos"
+            placeholder={"https://example.com/photo-1.jpg\nhttps://example.com/photo-2.jpg"}
+            rows={4}
+            className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 outline-none focus:border-sky-500"
+          />
+          <span className="mt-2 block text-xs text-slate-500">
+            Add up to five image URLs, one per line.
+          </span>
+        </label>
+        <label className="block">
           <span className="mb-2 block text-sm font-semibold">Description</span>
           <textarea
             name="description"

@@ -1,11 +1,20 @@
 import Link from "next/link";
 
 export default function ListingCard({ listing }) {
+  const cover = listing.photos?.[0];
+
   return (
     <article className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
       <Link href={`/listing/${listing.id}`} className="block">
-        <div className="flex h-52 items-end bg-gradient-to-br from-sky-200 via-indigo-100 to-amber-100 p-5">
-          <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-slate-700 shadow-sm">
+        <div className="relative h-52 overflow-hidden bg-gradient-to-br from-sky-200 via-indigo-100 to-amber-100">
+          {cover ? (
+            <img
+              src={cover}
+              alt={listing.title}
+              className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+            />
+          ) : null}
+          <span className="absolute bottom-5 left-5 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-slate-700 shadow-sm">
             {listing.placeType}
           </span>
         </div>
