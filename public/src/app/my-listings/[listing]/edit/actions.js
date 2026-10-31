@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { requireUser } from "@/lib/auth";
+import { parsePhotoUrls } from "@/lib/listing-photos";
 
 function readListingForm(formData) {
   const title = String(formData.get("title") ?? "").trim();
@@ -14,6 +15,7 @@ function readListingForm(formData) {
   const price = Number.parseInt(String(formData.get("price") ?? ""), 10);
   const guests = Number.parseInt(String(formData.get("guests") ?? "1"), 10);
   const bedrooms = Number.parseInt(String(formData.get("bedrooms") ?? "1"), 10);
+  const photos = parsePhotoUrls(formData.get("photos"));
 
   if (!title || !location || !placeType || !Number.isFinite(price) || price < 1) {
     throw new Error("Title, location, stay type, and a valid nightly price are required.");
@@ -28,6 +30,7 @@ function readListingForm(formData) {
     price,
     guests: Number.isFinite(guests) ? Math.max(1, guests) : 1,
     bedrooms: Number.isFinite(bedrooms) ? Math.max(1, bedrooms) : 1,
+    photos,
   };
 }
 
