@@ -21,6 +21,7 @@ function toCard(listing) {
       [listing.owner?.firstName, listing.owner?.lastName].filter(Boolean).join(" ") ??
       "Roost host",
     featured: listing.featured,
+    photos: Array.isArray(listing.photos) ? listing.photos : [],
   };
 }
 
