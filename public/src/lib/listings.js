@@ -17,6 +17,7 @@ function toListingCard(listing) {
       [listing.owner?.firstName, listing.owner?.lastName].filter(Boolean).join(" ") ??
       "Roost host",
     featured: listing.featured,
+    active: listing.active,
   };
 }
 
@@ -32,6 +33,7 @@ export async function getListings({
 
   const listings = await prisma.listing.findMany({
     where: {
+      active: true,
       ...(query
         ? {
             OR: [
@@ -75,7 +77,7 @@ export async function getListings({
 
 export async function getFeaturedListings() {
   const listings = await prisma.listing.findMany({
-    where: { featured: true },
+    where: { featured: true, active: true },
     include: { owner: true },
     take: 6,
     orderBy: [{ rating: "desc" }, { createdAt: "desc" }],
@@ -86,7 +88,7 @@ export async function getFeaturedListings() {
 
 export async function getListingById(id) {
   const listing = await prisma.listing.findUnique({
-    where: { id },
+    where: { id, active: true },
     include: { owner: true },
   });
 
@@ -105,6 +107,7 @@ export async function getListingsForOwner(ownerId) {
 
 export async function getListingFilterOptions() {
   const rows = await prisma.listing.findMany({
+    where: { active: true },
     distinct: ["placeType"],
     select: { placeType: true },
     orderBy: { placeType: "asc" },
